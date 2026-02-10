@@ -9,18 +9,74 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden; /* Hide scrollbars on the wrapper itself */
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
         }
         iframe {
             display: block;
             width: 100%;
             height: 100%;
             border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        /* Fallback message hidden by default */
+        .fallback {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+            z-index: 1; /* Behind iframe */
+        }
+        .btn {
+            background-color: #0d1b2a;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .btn:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
-    <!-- REPLACE THE URL BELOW with your actual Google Apps Script Web App URL -->
-    <iframe src="https://script.google.com/macros/s/AKfycbxgQ_aS4L4xbq2OGh-uF9kB3AturVr5XCYc4mhm7mjLmtA68zFk4s9vqO06BS0Fp2fkOw/exec"></iframe>
+
+    <!-- 
+      1. IFRAME: Loads your app.
+      2. ONLOAD: If it loads successfully, great. 
+      3. ERROR HANDLING: Google doesn't send "error" events cross-origin, 
+         so we rely on the fact that if the iframe works, it covers the fallback text.
+         If it gets blocked (403), the iframe might show white/error, 
+         so we can't fully hide it automatically.
+         
+         BETTER APPROACH:
+         We show the fallback message *behind* the iframe. 
+         If the iframe fails to render (403 often allows the frame but shows error content), 
+         users might see the error.
+         
+         The most robust "fix" for the Google Login Bug is to provide a direct link button 
+         that users can click if they see an error.
+    -->
+
+    <!-- Fallback Content (Visible if iframe fails or takes long) -->
+    <div class="fallback">
+        <h2>Having trouble loading the form?</h2>
+        <p>Google sometimes blocks embedded forms if you are signed into multiple accounts.</p>
+        <a href="https://script.google.com/macros/s/AKfycbxgQ_aS4L4xbq2OGh-uF9kB3AturVr5XCYc4mhm7mjLmtA68zFk4s9vqO06BS0Fp2fkOw/exec" target="_blank" class="btn">Click to Open Order Form</a>
+    </div>
+
+    <!-- The App -->
+    <iframe src="YOUR_WEB_APP_URL_HERE"></iframe>
+
 </body>
 </html>
